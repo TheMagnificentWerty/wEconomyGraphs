@@ -1,13 +1,13 @@
-$(function () {
-    var energyCanvas = $('<canvas/>',{'id':'energySmoothieChart'})
-    .width(280)
-    .height(76)
-	$("body").append(energyCanvas);
+$(document).ready(function () {
 
-    var metalCanvas = $('<canvas/>',{'id':'metalSmoothieChart'})
-    .width(280)
-    .height(76);
-    $("body").append(metalCanvas);
+    createFloatingFrame('energySmoothie', 320, 58, {'offset': 'topRight', 'left': -320});
+    var energyCanvas = "<canvas id='energySmoothieChart' height='40' width='280'> </canvas>";
+	$("#energySmoothie_content").append(energyCanvas);
+
+
+    createFloatingFrame('metalSmoothie', 320, 58, {'offset': 'topRight', 'left': -320});
+    var metalCanvas = "<canvas id='metalSmoothieChart' height='40' width='280'> </canvas>";
+    $("#metalSmoothie_content").append(metalCanvas);
 
     
     handlers.army = function (payload) {

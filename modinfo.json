@@ -15,9 +15,9 @@
     ],
     "id": "wEconomyGraph",
     "priority": 100,
-    "live_game_econ": [
-        "coui://ui/mods/wEconomyGraphs/init.js",
+    "live_game": [
         "coui://ui/mods/wEconomyGraphs/smoothie.js",
+        "coui://ui/mods/wEconomyGraphs/init.js",
         "coui://ui/mods/wEconomyGraphs/economygraphs.css"
     ],
     "enabled": true

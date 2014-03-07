@@ -9,7 +9,6 @@ $(document).ready(function () {
     var metalCanvas = "<canvas id='metalSmoothieChart' height='40' width='280'> </canvas>";
     $("#metalSmoothie_content").append(metalCanvas);
 
-    
     handlers.army = function (payload) {
         model.currentEnergy(payload.energy.current);
         model.maxEnergy(payload.energy.storage);
@@ -39,7 +38,7 @@ $(document).ready(function () {
     										fillStyle:'rgba(0,0,0,0.75)',
     										strokeStyle:'rgba(255,255,255,0.25)',
     										interpolation:'bezier',
-    										verticalSections:10,
+    										verticalSections:5,
     										sharpLines:true},
     									labels:{disabled:true},
     									yRangeFunction:rangeFunction});
@@ -49,7 +48,7 @@ $(document).ready(function () {
     										fillStyle:'rgba(0,0,0,0.75)',
     										strokeStyle:'rgba(255,255,255,0.25)',
     										interpolation:'bezier',
-    										verticalSections:10,
+    										verticalSections:5,
     										sharpLines:true},
     									labels:{disabled:true},
     									yRangeFunction:rangeFunction});

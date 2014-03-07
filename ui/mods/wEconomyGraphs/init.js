@@ -10,6 +10,22 @@ $(function () {
     $("body").append(metalCanvas);
 
     
+    handlers.army = function (payload) {
+        model.currentEnergy(payload.energy.current);
+        model.maxEnergy(payload.energy.storage);
+        model.energyGain(payload.energy.production);
+        model.energyLoss(payload.energy.demand);
+
+        model.currentMetal(payload.metal.current);
+        model.maxMetal(payload.metal.storage);
+        model.metalGain(payload.metal.production);
+        model.metalLoss(payload.metal.demand);
+    }
+
+    model.energyGain = ko.observable(1.0);
+    model.energyLoss = ko.observable(1.0);
+    model.metalGain = ko.observable(1.0);
+    model.metalLoss = ko.observable(1.0);
 
    function rangeFunction(range) {
 	  // TODO implement your calculation using range.min and range.max

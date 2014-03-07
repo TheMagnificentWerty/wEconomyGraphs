@@ -1,11 +1,11 @@
 $(document).ready(function () {
 
-    createFloatingFrame('energySmoothie', 320, 58, {'offset': 'topRight', 'left': -320});
+    createFloatingFrame('energySmoothie', 280, 40, {'rememberPosition': false});
     var energyCanvas = "<canvas id='energySmoothieChart' height='40' width='280'> </canvas>";
 	$("#energySmoothie_content").append(energyCanvas);
 
 
-    createFloatingFrame('metalSmoothie', 320, 58, {'offset': 'topRight', 'left': -320});
+    createFloatingFrame('metalSmoothie', 280, 40, {'rememberPosition': false});
     var metalCanvas = "<canvas id='metalSmoothieChart' height='40' width='280'> </canvas>";
     $("#metalSmoothie_content").append(metalCanvas);
 

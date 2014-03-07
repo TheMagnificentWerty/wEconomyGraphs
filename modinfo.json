@@ -1,0 +1,24 @@
+{
+    "context": "client",
+    "identifier": "com.pa.werty.wEconomyGraph",
+    "display_name": "Live Economy Graphs",
+    "description": "Shows a live graph depecting your Energy and Metal income history.",
+    "author": "The Magnificent Werty",
+    "version": "0.1.0",
+    "build": "62443",
+    "date": "2014/03/07",
+    "forum": "",
+    "icon": "",
+    "category": [
+        "in-game",
+        "ui"
+    ],
+    "id": "wEconomyGraph",
+    "priority": 100,
+    "live_game_econ": [
+        "coui://ui/mods/wEconomyGraphs/init.js",
+        "coui://ui/mods/wEconomyGraphs/smoothie.js",
+        "coui://ui/mods/wEconomyGraphs/economygraphs.css"
+    ],
+    "enabled": true
+}

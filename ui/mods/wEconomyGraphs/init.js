@@ -37,22 +37,27 @@ $(document).ready(function () {
     //{millisPerPixel:100,grid:{fillStyle:'rgba(0,0,0,0.17)',sharpLines:true,millisPerLine:10000,verticalSections:20},labels:{disabled:true}}
     var energyChart = new SmoothieChart({millisPerPixel:350, 
     									grid:{millisPerLine:10000, 
-    										fillStyle:'rgba(0,0,0,0.75)',
+    										fillStyle:'rgba(0,0,0,0.85)',
     										strokeStyle:'rgba(255,255,255,0.25)',
     										interpolation:'bezier',
     										verticalSections:5,
     										sharpLines:true},
-    									labels:{disabled:true},
+    									labels:{disabled:false,
+                                            fontFamily:'Sansation Bold',
+                                            precision:0,
+                                            fontSize:10 },
     									yRangeFunction:rangeFunction});
 	
 	var metalChart = new SmoothieChart({millisPerPixel:350, 
     									grid:{millisPerLine:10000, 
-    										fillStyle:'rgba(0,0,0,0.75)',
+    										fillStyle:'rgba(0,0,0,0.85)',
     										strokeStyle:'rgba(255,255,255,0.25)',
     										interpolation:'bezier',
     										verticalSections:5,
     										sharpLines:true},
-    									labels:{disabled:true},
+    									labels:{fontFamily:'Sansation Bold',
+                                            precision:0,
+                                            fontSize:10},
     									yRangeFunction:rangeFunction});
 
 
@@ -66,10 +71,10 @@ $(document).ready(function () {
 		  metalIncome.append(new Date().getTime(), model.metalGain());
 		  metalUsage.append(new Date().getTime(), model.metalLoss());
 	});
-	energyChart.addTimeSeries(energyUsage,{strokeStyle:'#850505',lineWidth:0,fillStyle:'rgba(254,1,39,0.50)'});
+	energyChart.addTimeSeries(energyUsage,{strokeStyle:'#848484',lineWidth:2,fillStyle:'rgba(105,105,105,0.75)'});
 	energyChart.addTimeSeries(energyIncome,{strokeStyle:'#ddd01f',lineWidth:2});
 
-	metalChart.addTimeSeries(metalUsage,{strokeStyle:'#850505',lineWidth:0,fillStyle:'rgba(254,1,39,0.50)'});
+	metalChart.addTimeSeries(metalUsage,{strokeStyle:'#848484',lineWidth:2,fillStyle:'rgba(105,105,105,0.75)'});
 	metalChart.addTimeSeries(metalIncome,{strokeStyle:'#01b3f4',lineWidth:2});
 
 

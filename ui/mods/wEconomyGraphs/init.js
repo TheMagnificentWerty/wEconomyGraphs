@@ -29,7 +29,9 @@ $(document).ready(function () {
    function rangeFunction(range) {
 	  // TODO implement your calculation using range.min and range.max
 	  var min = 0;
-	  var max = range.max + range.max/20;
+	  var max = range.max;
+      var max = Math.round(max);
+
 	  return {min: min, max: max};
 	}
     //{millisPerPixel:100,grid:{fillStyle:'rgba(0,0,0,0.17)',sharpLines:true,millisPerLine:10000,verticalSections:20},labels:{disabled:true}}

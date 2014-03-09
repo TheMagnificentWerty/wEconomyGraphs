@@ -1,13 +1,50 @@
-$(document).ready(function () {
+$(function () {
 
-    createFloatingFrame('energySmoothie', 284, 44, {'rememberPosition': true,'offset':'topCenter','left':337});
-    var energyCanvas = "<canvas id='energySmoothieChart' class='smoothieChart' height='40' width='280'> </canvas>";
+    var time;
+    var alphaTime;
+    var syncedTime;
+var trySyncInterval;
+
+
+     function syncTime(alpha) {
+        alphaTime = alpha;
+     }
+    function startAndSyncCounterAt(seconds) {
+        time = Math.floor(seconds);
+        clearInterval(trySyncInterval);
+        trySyncInterval = setInterval(function() {
+               time = time + 1;
+               syncedTime = time + alphaTime;
+               console.log(time);
+            },1000
+        );
+    }
+    startAndSyncCounterAt(model.currentTimeInSeconds());
+    setInterval(function(){
+                startAndSyncCounterAt(model.currentTimeInSeconds());
+            },100000);
+
+    createFloatingFrame('energySmoothie', "auto", "auto", {'rememberPosition': true,'offset':'topCenter','left':337});
+    var energyCanvas = "<canvas id='energySmoothieChart' class='smoothieChart'> </canvas>";
 	$("#energySmoothie_content").append(energyCanvas);
+    $("#energySmoothie").addClass("smoothieContent");
+    $("#energySmoothieChart").resizable({
+      grid: 20,
+       maxHeight: 150,
+      maxWidth: 1280,
+      minHeight: 50,
+      minWidth: 200
+    });
 
-
-    createFloatingFrame('metalSmoothie', 284, 44, {'rememberPosition': true,'offset':'topCenter','left':-610});
-    var metalCanvas = "<canvas id='metalSmoothieChart' class='smoothieChart' height='40' width='280'> </canvas>";
+    createFloatingFrame('metalSmoothie', "auto", "auto", {'rememberPosition': true,'offset':'topCenter','left':-610});
+    var metalCanvas = "<canvas id='metalSmoothieChart' class='smoothieChart'> </canvas>";
     $("#metalSmoothie_content").append(metalCanvas);
+    $("#metalSmoothie").addClass("smoothieContent");
+    $("#metalSmoothieChart").resizable({
+      grid: 20,
+       maxHeight: 150,
+      maxWidth: 1280,
+    });
 
     handlers.army = function (payload) {
         model.currentEnergy(payload.energy.current);
@@ -34,29 +71,91 @@ $(document).ready(function () {
 
 	  return {min: min, max: max};
 	}
+    oldTime =0 ;
+    oldRealTime=0;
+    SmoothieChart.timeFormatter = function(date) {
+        var secondsFromEpochInChart = date.getTime()/1000;
+        //console.log(secondsFromEpochInChart);
+        var nowDate = new Date();
+        var secondsFromEpochNow = nowDate.getTime()/1000;
+
+        var differenceFromGameStart = secondsFromEpochNow-secondsFromEpochInChart;
+        
+
+        var secondsFromGameStart = Math.round(syncedTime);
+
+        syncTime(time % 1);
+        
+
+        var chartTime = secondsFromGameStart - differenceFromGameStart;
+
+        var roundedChartTime = Math.floor(chartTime - (chartTime % 5));
+
+        var splitBythirty = roundedChartTime/30
+        var splitBythirtyrounded = Math.round(roundedChartTime/30);
+
+       // if(splitBythirty != splitBythirtyrounded) {
+          // return "";
+       // }
+       // else {
+            var timeDate = new Date(roundedChartTime * 1000);
+
+            var seconds = roundedChartTime % 60;
+            var minutes = Math.floor((roundedChartTime % (60*60)) / 60);
+            var hours = Math.floor(roundedChartTime / (60 * 60));
+            function pad2(number) { return (number < 10 ? '0' : '') + number }
+
+
+            var timeString = pad2(seconds);
+            if(minutes >0 && hours >0) {
+                timeString = pad2(minutes)+":".concat(timeString);
+            }
+            else if(minutes >0) {
+                timeString = minutes+":".concat(timeString);
+            }
+
+            if(hours > 0) {
+                timeString = hours+":".concat(timeString);
+            }
+
+            return Math.round((time % 1)*1000) + ":" + Math.round(((differenceFromGameStart/1000) % 1)*1000);
+       //}
+        
+    };
+    
+    //SmoothieChart.timeFormatter = function() {
+         
+//return 1;
+    //};
     //{millisPerPixel:100,grid:{fillStyle:'rgba(0,0,0,0.17)',sharpLines:true,millisPerLine:10000,verticalSections:20},labels:{disabled:true}}
-    var energyChart = new SmoothieChart({millisPerPixel:350, 
-    									grid:{millisPerLine:10000, 
+    var energyChart = new SmoothieChart({millisPerPixel:100, 
+                                        timestampFormatter:SmoothieChart.timeFormatter,
+    									grid:{millisPerLine:5000, 
     										fillStyle:'rgba(0,0,0,0.85)',
     										strokeStyle:'rgba(255,255,255,0.25)',
+                                            strokeStyleWhenTimeLabeled:"rgba(255,255,255,0.70)",
     										interpolation:'bezier',
     										verticalSections:5,
     										sharpLines:true},
     									labels:{disabled:false,
                                             fontFamily:'Sansation Bold',
+                                            fillStyle:'rgba(255,255,255,0.60)',
                                             precision:0,
                                             fontSize:10 },
     									yRangeFunction:rangeFunction});
 	
-	var metalChart = new SmoothieChart({millisPerPixel:350, 
-    									grid:{millisPerLine:10000, 
+	var metalChart = new SmoothieChart({millisPerPixel:100,
+                                        timestampFormatter:SmoothieChart.timeFormatter,
+    									grid:{millisPerLine:5000, 
     										fillStyle:'rgba(0,0,0,0.85)',
     										strokeStyle:'rgba(255,255,255,0.25)',
+                                            strokeStyleWhenTimeLabeled:"rgba(255,255,255,0.70)",
     										interpolation:'bezier',
     										verticalSections:5,
     										sharpLines:true},
     									labels:{fontFamily:'Sansation Bold',
                                             precision:0,
+                                            fillStyle:'rgba(255,255,255,0.60)',
                                             fontSize:10},
     									yRangeFunction:rangeFunction});
 
@@ -65,19 +164,24 @@ $(document).ready(function () {
 	var energyIncome = new TimeSeries();
 	var metalUsage = new TimeSeries();
 	var metalIncome = new TimeSeries();
+    var oldtime = 0;
 	setInterval(function() {
-		  energyIncome.append(new Date().getTime(), model.energyGain());
-		  energyUsage.append(new Date().getTime(), model.energyLoss());
-		  metalIncome.append(new Date().getTime(), model.metalGain());
-		  metalUsage.append(new Date().getTime(), model.metalLoss());
-	});
-	energyChart.addTimeSeries(energyUsage,{strokeStyle:'#848484',lineWidth:2,fillStyle:'rgba(105,105,105,0.75)'});
-	energyChart.addTimeSeries(energyIncome,{strokeStyle:'#ddd01f',lineWidth:2});
+
+		//energyIncome.append(new Date().getTime(), model.energyGain());
+		//energyUsage.append(new Date().getTime(), model.energyLoss());
+		metalIncome.append(new Date().getTime(), model.metalGain());
+		metalUsage.append(new Date().getTime(), model.metalLoss());
+          
+	},100);
+	//energyChart.addTimeSeries(energyUsage,{strokeStyle:'#848484',lineWidth:2,fillStyle:'rgba(105,105,105,0.75)'});
+	//energyChart.addTimeSeries(energyIncome,{strokeStyle:'#ddd01f',lineWidth:2});
 
 	metalChart.addTimeSeries(metalUsage,{strokeStyle:'#848484',lineWidth:2,fillStyle:'rgba(105,105,105,0.75)'});
 	metalChart.addTimeSeries(metalIncome,{strokeStyle:'#01b3f4',lineWidth:2});
 
+	//energyChart.streamTo(document.getElementById("energySmoothieChart"),100);
+	metalChart.streamTo(document.getElementById("metalSmoothieChart"),0);
+    
 
-	energyChart.streamTo(document.getElementById("energySmoothieChart"),5);
-	metalChart.streamTo(document.getElementById("metalSmoothieChart"),5);
+    api.time.control();
 });

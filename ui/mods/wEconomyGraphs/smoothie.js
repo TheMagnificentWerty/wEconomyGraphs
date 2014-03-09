@@ -490,9 +490,25 @@
     }
     this.lastRenderTimeMillis = nowMillis;
     
+
+
     canvas = canvas || this.canvas;
     time = time || nowMillis - (this.delay || 0);
 
+
+     // resize the canvas to fill browser window dynamically
+   // canvas.parentNode.addEventListener('resize', resizeCanvas, false);
+
+    function resizeCanvas() {
+            canvas.width = $(canvas.parentNode).innerWidth();
+            canvas.height = $(canvas.parentNode).innerHeight();
+
+            /**
+             * Your drawings need to be inside this function otherwise they will be reset when 
+             * you resize the browser window and the canvas goes will be cleared.
+             */
+    }
+    resizeCanvas();
     // Round time down to pixel granularity, so motion appears smoother.
     time -= time % this.options.millisPerPixel;
 
@@ -538,14 +554,23 @@
 
     // Grid lines...
     context.save();
-    context.lineWidth = chartOptions.grid.lineWidth;
+    
+   
+    context.lineWidth = chartOptions.grid.lineWidth + 0;
+    
     context.strokeStyle = chartOptions.grid.strokeStyle;
     // Vertical (time) dividers.
     if (chartOptions.grid.millisPerLine > 0) {
-      var textUntilX = dimensions.width - context.measureText(minValueString).width + 4;
+      var textUntilX = dimensions.width - context.measureText(minValueString).width +25;
       for (var t = time - (time % chartOptions.grid.millisPerLine);
            t >= oldestValidTime;
            t -= chartOptions.grid.millisPerLine) {
+        var tx = new Date(t),
+            ts = chartOptions.timestampFormatter(tx),
+            tsWidth = context.measureText(ts).width;
+        if(ts.length>0) {
+          context.strokeStyle = chartOptions.grid.strokeStyleWhenTimeLabeled;
+        }
         var gx = timeToXPixel(t);
         if (chartOptions.grid.sharpLines) {
           gx -= 0.5;
@@ -555,20 +580,19 @@
         context.lineTo(gx, dimensions.height);
         context.stroke();
         context.closePath();
-
+        context.strokeStyle = chartOptions.grid.strokeStyle;
         // Display timestamp at bottom of this line if requested, and it won't overlap
-        if (chartOptions.timestampFormatter && gx < textUntilX) {
+        if (chartOptions.timestampFormatter) {
           // Formats the timestamp based on user specified formatting function
           // SmoothieChart.timeFormatter function above is one such formatting option
-          var tx = new Date(t),
-            ts = chartOptions.timestampFormatter(tx),
-            tsWidth = context.measureText(ts).width;
+
           textUntilX = gx - tsWidth - 2;
           context.fillStyle = chartOptions.labels.fillStyle;
           context.fillText(ts, gx - tsWidth, dimensions.height - 2);
         }
       }
     }
+
 
     // Horizontal (value) dividers.
     for (var v = 1; v < chartOptions.grid.verticalSections; v++) {

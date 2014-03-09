@@ -1,4 +1,11 @@
-.smoothieChart {
+.smoothieContent {
 	border: 1px solid #494949;
 	padding:1px;
+	
+}
+.ui-resizable-helper { border: 1px dashed #848484; }
+
+.smoothieChart {
+	height:50px;
+	width:300px;
 }

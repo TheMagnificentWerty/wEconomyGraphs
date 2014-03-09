@@ -1,5 +1,4 @@
-$(document).ready(function () {
-
+(function () {
     createFloatingFrame('energySmoothie', 284, 44, {'rememberPosition': true,'offset':'topCenter','left':337});
     var energyCanvas = "<canvas id='energySmoothieChart' class='smoothieChart' height='40' width='280'> </canvas>";
 	$("#energySmoothie_content").append(energyCanvas);
@@ -80,4 +79,4 @@ $(document).ready(function () {
 
 	energyChart.streamTo(document.getElementById("energySmoothieChart"),5);
 	metalChart.streamTo(document.getElementById("metalSmoothieChart"),5);
-});
+})();

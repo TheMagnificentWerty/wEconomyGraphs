@@ -8,16 +8,16 @@
     var metalCanvas = "<canvas id='metalSmoothieChart' class='smoothieChart' height='40' width='280'> </canvas>";
     $("#metalSmoothie_content").append(metalCanvas);
 
+    var oldHandlerArmy = handlers.army
     handlers.army = function (payload) {
-        model.currentEnergy(payload.energy.current);
-        model.maxEnergy(payload.energy.storage);
         model.energyGain(payload.energy.production);
         model.energyLoss(payload.energy.demand);
 
-        model.currentMetal(payload.metal.current);
-        model.maxMetal(payload.metal.storage);
         model.metalGain(payload.metal.production);
         model.metalLoss(payload.metal.demand);
+        if (oldHandlerArmy) {
+            oldHandlerArmy(payload);
+        }
     }
 
     model.energyGain = ko.observable(1.0);

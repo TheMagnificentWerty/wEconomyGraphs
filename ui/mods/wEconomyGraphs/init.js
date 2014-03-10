@@ -1,33 +1,56 @@
 $(function () {
 
     var time;
+    var oldTime;
+
+   
+    var oldDateTimeSeconds;
+
+
     var alphaTime;
     var syncedTime;
     var actualSyncedTime;
     actualSyncedTime = -100;
-var trySyncInterval;
+    var trySyncInterval;
 
 
      function syncTime(alpha) {
         alphaTime = alpha;
      }
+
+     var start = new Date().getTime(),
+    elapsed = '0.0';
     function startAndSyncCounterAt(seconds) {
-        time = Math.floor(seconds);
+        var firstTimeSync = false;
+        var dateTime = new Date();
+        oldDateTimeSeconds = Math.round((dateTime.getTime()-seconds*1000)/1000/5)*1000*5;
+        console.log(oldDateTimeSeconds);
         clearInterval(trySyncInterval);
         trySyncInterval = setInterval(function() {
-               time = time + 1;
-               syncedTime = time + alphaTime;
-               if(syncedTime + 100 > actualSyncedTime) {
-                    actualSyncedTime = actualSyncedTime + 100;
-               }
-               //console.log(time);
+            var dateTime = new Date();
+            var dateTimeSeconds = dateTime.getTime();
+            if(firstTimeSync == false) {
+                var decimals = dateTimeSeconds - Math.floor(dateTimeSeconds/1000)*1000;
+                oldDateTimeSeconds = oldDateTimeSeconds;
+                firstTimeSync = true;
+                console.log(decimals);
+                console.log(oldDateTimeSeconds);
+            }
+            
+
+            time = dateTimeSeconds - oldDateTimeSeconds;
+            
             },10
         );
     }
-    startAndSyncCounterAt(model.currentTimeInSeconds());
+
     setInterval(function(){
-                startAndSyncCounterAt(model.currentTimeInSeconds()*1000);
-            },100000);
+            console.log(model.currentTimeInSeconds());
+                startAndSyncCounterAt(model.currentTimeInSeconds());
+            },10000);
+
+    startAndSyncCounterAt(model.currentTimeInSeconds());
+
 
     createFloatingFrame('energySmoothie', "auto", "auto", {'rememberPosition': true,'offset':'topCenter','left':337});
     var energyCanvas = "<canvas id='energySmoothieChart' class='smoothieChart'> </canvas>";
@@ -79,15 +102,15 @@ var trySyncInterval;
     oldTime =0 ;
     oldRealTime=0;
     SmoothieChart.timeFormatter = function(date) {
-        var secondsFromEpochInChart = date.getTime()/1000;
+        var secondsFromEpochInChart = date.getTime();
         //console.log(secondsFromEpochInChart);
         var nowDate = new Date();
-        var secondsFromEpochNow = nowDate.getTime()/1000;
+        var secondsFromEpochNow = nowDate.getTime();
 
         var differenceFromGameStart = secondsFromEpochNow-secondsFromEpochInChart;
         
 
-        var secondsFromGameStart = syncedTime/100;
+        var secondsFromGameStart = time;
 
         var dateDecimals = Math.floor(date.getTime()/1000) - date.getTime()/1000;
         var timeDecimals = Math.floor(time/100) - time/100;
@@ -95,19 +118,26 @@ var trySyncInterval;
         var syncBy = (timeDecimals - dateDecimals) * 100;
 
         syncTime(syncBy);
-        
 
         var chartTime = secondsFromGameStart - differenceFromGameStart;
 
-        var roundedChartTime = Math.floor(chartTime - (chartTime % 5));
+        var chartTimeSeconds = chartTime / 1000;
 
-        var splitBythirty = roundedChartTime/30
+        var roundedChartTime = Math.round(chartTimeSeconds/5)*5;
+
+        var splitBythirty = roundedChartTime/30;
         var splitBythirtyrounded = Math.round(roundedChartTime/30);
 
-       // if(splitBythirty != splitBythirtyrounded) {
-       //    return "";
-       // }
-       // else {
+        var secondsFromEpochNowStep = Math.round((secondsFromEpochNow - (secondsFromEpochNow % 30))/1000) ;
+
+
+        if(splitBythirty != splitBythirtyrounded) {
+           return "";
+        }
+        else if(roundedChartTime<0) {
+            return "";
+        }
+        else {
             var timeDate = new Date(roundedChartTime * 1000);
 
             var seconds = roundedChartTime % 60;
@@ -120,7 +150,7 @@ var trySyncInterval;
             if(minutes >0 && hours >0) {
                 timeString = pad2(minutes)+":".concat(timeString);
             }
-            else if(minutes >0) {
+            else {
                 timeString = minutes+":".concat(timeString);
             }
 
@@ -128,8 +158,8 @@ var trySyncInterval;
                 timeString = hours+":".concat(timeString);
             }
 
-            return "-"+Math.round(differenceFromGameStart);
-       //}
+            return timeString;
+       }
         
     };
     
@@ -154,10 +184,10 @@ var trySyncInterval;
                                             fontSize:10 },
     									yRangeFunction:rangeFunction});
 	
-	var metalChart = new SmoothieChart({millisPerPixel:30,
+	var metalChart = new SmoothieChart({millisPerPixel:350,
                                         timestampFormatter:SmoothieChart.timeFormatter,
     									grid:{millisPerLine:5000, 
-    										fillStyle:'rgba(0,0,0,0.85)',
+    										fillStyle:'rgba(0,0,0,0.00)',
     										strokeStyle:'rgba(255,255,255,0.25)',
                                             strokeStyleWhenTimeLabeled:"rgba(255,255,255,0.70)",
     										interpolation:'bezier',

@@ -3,6 +3,8 @@ $(function () {
     var time;
     var alphaTime;
     var syncedTime;
+    var actualSyncedTime;
+    actualSyncedTime = -100;
 var trySyncInterval;
 
 
@@ -15,13 +17,16 @@ var trySyncInterval;
         trySyncInterval = setInterval(function() {
                time = time + 1;
                syncedTime = time + alphaTime;
-               console.log(time);
-            },1000
+               if(syncedTime + 100 > actualSyncedTime) {
+                    actualSyncedTime = actualSyncedTime + 100;
+               }
+               //console.log(time);
+            },10
         );
     }
     startAndSyncCounterAt(model.currentTimeInSeconds());
     setInterval(function(){
-                startAndSyncCounterAt(model.currentTimeInSeconds());
+                startAndSyncCounterAt(model.currentTimeInSeconds()*1000);
             },100000);
 
     createFloatingFrame('energySmoothie', "auto", "auto", {'rememberPosition': true,'offset':'topCenter','left':337});
@@ -82,9 +87,14 @@ var trySyncInterval;
         var differenceFromGameStart = secondsFromEpochNow-secondsFromEpochInChart;
         
 
-        var secondsFromGameStart = Math.round(syncedTime);
+        var secondsFromGameStart = syncedTime/100;
 
-        syncTime(time % 1);
+        var dateDecimals = Math.floor(date.getTime()/1000) - date.getTime()/1000;
+        var timeDecimals = Math.floor(time/100) - time/100;
+
+        var syncBy = (timeDecimals - dateDecimals) * 100;
+
+        syncTime(syncBy);
         
 
         var chartTime = secondsFromGameStart - differenceFromGameStart;
@@ -95,7 +105,7 @@ var trySyncInterval;
         var splitBythirtyrounded = Math.round(roundedChartTime/30);
 
        // if(splitBythirty != splitBythirtyrounded) {
-          // return "";
+       //    return "";
        // }
        // else {
             var timeDate = new Date(roundedChartTime * 1000);
@@ -118,7 +128,7 @@ var trySyncInterval;
                 timeString = hours+":".concat(timeString);
             }
 
-            return Math.round((time % 1)*1000) + ":" + Math.round(((differenceFromGameStart/1000) % 1)*1000);
+            return "-"+Math.round(differenceFromGameStart);
        //}
         
     };
@@ -144,7 +154,7 @@ var trySyncInterval;
                                             fontSize:10 },
     									yRangeFunction:rangeFunction});
 	
-	var metalChart = new SmoothieChart({millisPerPixel:100,
+	var metalChart = new SmoothieChart({millisPerPixel:30,
                                         timestampFormatter:SmoothieChart.timeFormatter,
     									grid:{millisPerLine:5000, 
     										fillStyle:'rgba(0,0,0,0.85)',

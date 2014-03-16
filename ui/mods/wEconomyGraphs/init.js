@@ -1,11 +1,11 @@
 (function () {
     createFloatingFrame('energySmoothie', 284, 44, {'rememberPosition': true,'offset':'topCenter','left':337});
-    var energyCanvas = "<canvas id='energySmoothieChart' class='smoothieChart' height='40' width='280'> </canvas>";
+    var energyCanvas = "<canvas id='energySmoothieChart' class='smoothieChart' height='40' width='280' data-bind='visible: !model.isSpectator() && !model.showLanding()'> </canvas>";
 	$("#energySmoothie_content").append(energyCanvas);
 
 
     createFloatingFrame('metalSmoothie', 284, 44, {'rememberPosition': true,'offset':'topCenter','left':-610});
-    var metalCanvas = "<canvas id='metalSmoothieChart' class='smoothieChart' height='40' width='280'> </canvas>";
+    var metalCanvas = "<canvas id='metalSmoothieChart' class='smoothieChart' height='40' width='280' data-bind='visible: !model.isSpectator() && !model.showLanding()'> </canvas>";
     $("#metalSmoothie_content").append(metalCanvas);
 
     var oldHandlerArmy = handlers.army
@@ -79,21 +79,4 @@
 
 	energyChart.streamTo(document.getElementById("energySmoothieChart"),5);
 	metalChart.streamTo(document.getElementById("metalSmoothieChart"),5);
-
-
-
-    var isSpectatorChanged = function() {
-        if(model.isSpectator() == true) {
-            $("#metalSmoothie").hide();
-            $("#energySmoothie").hide();
-        }
-        else {
-            $("#metalSmoothie").show();
-            $("#energySmoothie").show();
-        }
-    }
-
-
-    model.isSpectator.subscribe(function() {isSpectatorChanged();});
-    isSpectatorChanged();
 })();

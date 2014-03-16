@@ -79,17 +79,21 @@
 
 	energyChart.streamTo(document.getElementById("energySmoothieChart"),5);
 	metalChart.streamTo(document.getElementById("metalSmoothieChart"),5);
-        var isSpectatorChanged = function() {
-            if(model.isSpectator() == true) {
-                $("#metalSmoothie").hide();
-                $("#energySmoothie").hide();
-            }
-            else {
-                $("#metalSmoothie").show();
-                $("#energySmoothie").show();
-            }
+
+
+
+    var isSpectatorChanged = function() {
+        if(model.isSpectator() == true) {
+            $("#metalSmoothie").hide();
+            $("#energySmoothie").hide();
         }
+        else {
+            $("#metalSmoothie").show();
+            $("#energySmoothie").show();
+        }
+    }
 
 
-        model.isSpectator.subscribe(function() {isSpectatorChanged();});
+    model.isSpectator.subscribe(function() {isSpectatorChanged();});
+    isSpectatorChanged();
 })();

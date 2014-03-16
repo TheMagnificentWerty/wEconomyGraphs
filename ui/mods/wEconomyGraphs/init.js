@@ -1,11 +1,13 @@
 (function () {
     createFloatingFrame('energySmoothie', 284, 44, {'rememberPosition': true,'offset':'topCenter','left':337});
-    var energyCanvas = "<canvas id='energySmoothieChart' class='smoothieChart' height='40' width='280' data-bind='visible: !model.isSpectator() && !model.showLanding()'> </canvas>";
-	$("#energySmoothie_content").append(energyCanvas);
+    var energyCanvas = "<canvas id='energySmoothieChart' class='smoothieChart' height='40' width='280'> </canvas>";
+	$("#energySmoothie").attr('data-bind', 'visible: !model.isSpectator() && !model.showLanding()');
+    $("#energySmoothie_content").append(energyCanvas);
 
 
     createFloatingFrame('metalSmoothie', 284, 44, {'rememberPosition': true,'offset':'topCenter','left':-610});
-    var metalCanvas = "<canvas id='metalSmoothieChart' class='smoothieChart' height='40' width='280' data-bind='visible: !model.isSpectator() && !model.showLanding()'> </canvas>";
+    var metalCanvas = "<canvas id='metalSmoothieChart' class='smoothieChart' height='40' width='280'> </canvas>";
+    $("#metalSmoothie").attr('data-bind', 'visible: !model.isSpectator() && !model.showLanding()');
     $("#metalSmoothie_content").append(metalCanvas);
 
     var oldHandlerArmy = handlers.army

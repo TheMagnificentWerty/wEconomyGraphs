@@ -1,4 +1,15 @@
+.smoothieFrame {
+	padding:3px;
+}
+
+.smoothieFrameContent {
+	background:rgba(0,0,0,0.50);
+	border: 1px solid #333333;
+	box-shadow: black 0px 0px 15px 0px;
+}
+
 .smoothieChart {
-	border: 1px solid #494949;
-	padding:1px;
+	height:50px;
+	width:300px;
+	background:rgba(0,0,0,0.50);
 }
